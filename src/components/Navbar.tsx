@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { useTheme } from './ThemeProvider';
 
 const navLinks = [
     { href: '/', label: 'Home' },
@@ -17,7 +16,6 @@ const navLinks = [
 export default function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const { theme, toggleTheme } = useTheme();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -61,9 +59,6 @@ export default function Navbar() {
                     </ul>
 
                     <div className="navbar-actions">
-                        <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
-                            {theme === 'dark' ? '☀️' : '🌙'}
-                        </button>
                         <button
                             className="mobile-menu-btn"
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
