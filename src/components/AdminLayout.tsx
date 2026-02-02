@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ReactNode, useState } from 'react';
-import { useTheme } from './ThemeProvider';
 
 const sidebarLinks = [
     { href: '/admin', label: 'Dashboard', icon: '📊' },
@@ -16,7 +15,6 @@ const sidebarLinks = [
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
     const pathname = usePathname();
-    const { theme, toggleTheme } = useTheme();
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -128,11 +126,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                                 className="admin-search-input"
                             />
                         </div>
-
-                        {/* Theme Toggle */}
-                        <button className="admin-icon-btn" onClick={toggleTheme}>
-                            {theme === 'dark' ? '☀️' : '🌙'}
-                        </button>
 
                         {/* Notifications */}
                         <button className="admin-icon-btn admin-notification">
