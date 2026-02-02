@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import ServiceCard from '@/components/ServiceCard';
 import servicesData from '@/data/services.json';
+import { HeroButtons, FloatingCardIcons, CategoryIcon } from '@/components/IconComponents';
 
 export default function Home() {
   // Get featured services for homepage
@@ -43,14 +44,7 @@ export default function Home() {
                 MakeMyPortal is your one-stop solution for websites, bots, branding, videos, and automation.
                 We turn your ideas into reality with premium quality and transparent pricing.
               </p>
-              <div className="hero-cta">
-                <Link href="/services" className="btn btn-primary btn-lg">
-                  <span>🚀</span> Explore Services
-                </Link>
-                <Link href="/contact" className="btn btn-outline btn-lg">
-                  <span>💬</span> Get Custom Quote
-                </Link>
-              </div>
+              <HeroButtons />
 
               {/* Quick Stats */}
               <div className="hero-stats">
@@ -82,18 +76,7 @@ export default function Home() {
                   className="hero-image"
                   priority
                 />
-                <div className="floating-card card-1">
-                  <span>💻</span>
-                  <span>Web Development</span>
-                </div>
-                <div className="floating-card card-2">
-                  <span>🤖</span>
-                  <span>AI & Bots</span>
-                </div>
-                <div className="floating-card card-3">
-                  <span>🎨</span>
-                  <span>Design</span>
-                </div>
+                <FloatingCardIcons />
               </div>
             </div>
           </div>
@@ -135,7 +118,7 @@ export default function Home() {
               >
                 <div className="category-image">
                   <Image
-                    src={categoryImages[category.id] || categoryImages.misc}
+                    src={categoryImages[category.id] || categoryImages.hosting}
                     alt={category.name}
                     width={400}
                     height={200}
@@ -144,7 +127,9 @@ export default function Home() {
                   <div className="category-overlay"></div>
                 </div>
                 <div className="category-content">
-                  <div className="category-icon-badge">{category.icon}</div>
+                  <div className="category-icon-badge">
+                    <CategoryIcon categoryId={category.id} size={24} />
+                  </div>
                   <h3>{category.name}</h3>
                   <p>{category.description}</p>
                   <span className="category-link">

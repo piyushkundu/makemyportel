@@ -3,14 +3,31 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ReactNode, useState } from 'react';
+import {
+    LayoutDashboard,
+    Wrench,
+    Package,
+    Users,
+    MessageSquare,
+    Settings,
+    Globe,
+    LogOut,
+    Search,
+    Bell,
+    ChevronDown,
+    Menu,
+    X,
+    Rocket,
+    User
+} from 'lucide-react';
 
 const sidebarLinks = [
-    { href: '/admin', label: 'Dashboard', icon: '📊' },
-    { href: '/admin/services', label: 'Services', icon: '🛠️' },
-    { href: '/admin/orders', label: 'Orders', icon: '📦' },
-    { href: '/admin/clients', label: 'Clients', icon: '👥' },
-    { href: '/admin/inquiries', label: 'Inquiries', icon: '💬' },
-    { href: '/admin/settings', label: 'Settings', icon: '⚙️' },
+    { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/admin/services', label: 'Services', icon: Wrench },
+    { href: '/admin/orders', label: 'Orders', icon: Package },
+    { href: '/admin/clients', label: 'Clients', icon: Users },
+    { href: '/admin/inquiries', label: 'Inquiries', icon: MessageSquare },
+    { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -30,7 +47,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
                 <div className="admin-sidebar-header">
                     <Link href="/admin" className="admin-logo">
-                        <span className="admin-logo-icon">🚀</span>
+                        <span className="admin-logo-icon">
+                            <Rocket size={24} />
+                        </span>
                         <div>
                             <div className="admin-logo-text">MakeMyPortal</div>
                             <div className="admin-logo-sub">Admin Panel</div>
@@ -40,7 +59,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                         className="admin-sidebar-close"
                         onClick={() => setSidebarOpen(false)}
                     >
-                        ✕
+                        <X size={20} />
                     </button>
                 </div>
 
@@ -48,49 +67,59 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                     <div className="admin-nav-section">
                         <div className="admin-nav-title">Main Menu</div>
                         <ul className="admin-nav-list">
-                            {sidebarLinks.slice(0, 4).map((link) => (
-                                <li key={link.href}>
-                                    <Link
-                                        href={link.href}
-                                        className={`admin-nav-link ${pathname === link.href ? 'active' : ''}`}
-                                        onClick={() => setSidebarOpen(false)}
-                                    >
-                                        <span className="admin-nav-icon">{link.icon}</span>
-                                        <span className="admin-nav-text">{link.label}</span>
-                                        {pathname === link.href && <span className="admin-nav-indicator" />}
-                                    </Link>
-                                </li>
-                            ))}
+                            {sidebarLinks.slice(0, 4).map((link) => {
+                                const IconComponent = link.icon;
+                                return (
+                                    <li key={link.href}>
+                                        <Link
+                                            href={link.href}
+                                            className={`admin-nav-link ${pathname === link.href ? 'active' : ''}`}
+                                            onClick={() => setSidebarOpen(false)}
+                                        >
+                                            <span className="admin-nav-icon">
+                                                <IconComponent size={20} />
+                                            </span>
+                                            <span className="admin-nav-text">{link.label}</span>
+                                            {pathname === link.href && <span className="admin-nav-indicator" />}
+                                        </Link>
+                                    </li>
+                                );
+                            })}
                         </ul>
                     </div>
 
                     <div className="admin-nav-section">
                         <div className="admin-nav-title">Settings</div>
                         <ul className="admin-nav-list">
-                            {sidebarLinks.slice(4).map((link) => (
-                                <li key={link.href}>
-                                    <Link
-                                        href={link.href}
-                                        className={`admin-nav-link ${pathname === link.href ? 'active' : ''}`}
-                                        onClick={() => setSidebarOpen(false)}
-                                    >
-                                        <span className="admin-nav-icon">{link.icon}</span>
-                                        <span className="admin-nav-text">{link.label}</span>
-                                        {pathname === link.href && <span className="admin-nav-indicator" />}
-                                    </Link>
-                                </li>
-                            ))}
+                            {sidebarLinks.slice(4).map((link) => {
+                                const IconComponent = link.icon;
+                                return (
+                                    <li key={link.href}>
+                                        <Link
+                                            href={link.href}
+                                            className={`admin-nav-link ${pathname === link.href ? 'active' : ''}`}
+                                            onClick={() => setSidebarOpen(false)}
+                                        >
+                                            <span className="admin-nav-icon">
+                                                <IconComponent size={20} />
+                                            </span>
+                                            <span className="admin-nav-text">{link.label}</span>
+                                            {pathname === link.href && <span className="admin-nav-indicator" />}
+                                        </Link>
+                                    </li>
+                                );
+                            })}
                         </ul>
                     </div>
                 </nav>
 
                 <div className="admin-sidebar-footer">
                     <Link href="/" className="admin-nav-link">
-                        <span className="admin-nav-icon">🌐</span>
+                        <span className="admin-nav-icon"><Globe size={20} /></span>
                         <span className="admin-nav-text">View Website</span>
                     </Link>
                     <button className="admin-nav-link admin-logout">
-                        <span className="admin-nav-icon">🚪</span>
+                        <span className="admin-nav-icon"><LogOut size={20} /></span>
                         <span className="admin-nav-text">Logout</span>
                     </button>
                 </div>
@@ -105,7 +134,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                             className="admin-menu-btn"
                             onClick={() => setSidebarOpen(true)}
                         >
-                            ☰
+                            <Menu size={24} />
                         </button>
                         <div className="admin-breadcrumb">
                             <span>Admin</span>
@@ -119,7 +148,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                     <div className="admin-header-right">
                         {/* Search */}
                         <div className="admin-search">
-                            <span className="admin-search-icon">🔍</span>
+                            <span className="admin-search-icon"><Search size={18} /></span>
                             <input
                                 type="text"
                                 placeholder="Search..."
@@ -129,7 +158,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
                         {/* Notifications */}
                         <button className="admin-icon-btn admin-notification">
-                            🔔
+                            <Bell size={20} />
                             <span className="admin-notification-badge">3</span>
                         </button>
 
@@ -144,20 +173,22 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                                     <div className="admin-user-name">Admin User</div>
                                     <div className="admin-user-role">Super Admin</div>
                                 </div>
-                                <span className="admin-user-arrow">▼</span>
+                                <span className="admin-user-arrow">
+                                    <ChevronDown size={16} />
+                                </span>
                             </button>
 
                             {dropdownOpen && (
                                 <div className="admin-dropdown">
                                     <Link href="/admin/settings" className="admin-dropdown-item">
-                                        <span>⚙️</span> Settings
+                                        <Settings size={16} /> Settings
                                     </Link>
                                     <Link href="/admin/profile" className="admin-dropdown-item">
-                                        <span>👤</span> Profile
+                                        <User size={16} /> Profile
                                     </Link>
                                     <hr className="admin-dropdown-divider" />
                                     <button className="admin-dropdown-item admin-dropdown-logout">
-                                        <span>🚪</span> Logout
+                                        <LogOut size={16} /> Logout
                                     </button>
                                 </div>
                             )}

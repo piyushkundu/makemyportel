@@ -2,15 +2,26 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import {
+    Home,
+    Briefcase,
+    DollarSign,
+    Globe,
+    Cpu,
+    Info,
+    Mail,
+    X,
+    Menu
+} from 'lucide-react';
 
 const navLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/services', label: 'Services' },
-    { href: '/pricing', label: 'Pricing' },
-    { href: '/website-builder', label: 'Website Builder' },
-    { href: '/tools', label: 'Tools & AI' },
-    { href: '/about', label: 'About' },
-    { href: '/contact', label: 'Contact' },
+    { href: '/', label: 'Home', icon: Home },
+    { href: '/services', label: 'Services', icon: Briefcase },
+    { href: '/pricing', label: 'Pricing', icon: DollarSign },
+    { href: '/website-builder', label: 'Website Builder', icon: Globe },
+    { href: '/tools', label: 'Tools & AI', icon: Cpu },
+    { href: '/about', label: 'About', icon: Info },
+    { href: '/contact', label: 'Contact', icon: Mail },
 ];
 
 export default function Navbar() {
@@ -64,11 +75,7 @@ export default function Navbar() {
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
                             aria-label="Toggle menu"
                         >
-                            <span className={`hamburger ${isMenuOpen ? 'open' : ''}`}>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </span>
+                            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
                         </button>
                     </div>
                 </div>
@@ -84,17 +91,21 @@ export default function Navbar() {
                         MakeMy<span>Portal</span>
                     </Link>
                     <button className="mobile-menu-close" onClick={closeMenu} aria-label="Close menu">
-                        ✕
+                        <X size={24} />
                     </button>
                 </div>
                 <ul className="mobile-menu-nav">
-                    {navLinks.map((link) => (
-                        <li key={link.href}>
-                            <Link href={link.href} className="mobile-menu-link" onClick={closeMenu}>
-                                {link.label}
-                            </Link>
-                        </li>
-                    ))}
+                    {navLinks.map((link) => {
+                        const IconComponent = link.icon;
+                        return (
+                            <li key={link.href}>
+                                <Link href={link.href} className="mobile-menu-link" onClick={closeMenu}>
+                                    <IconComponent size={20} />
+                                    <span>{link.label}</span>
+                                </Link>
+                            </li>
+                        );
+                    })}
                 </ul>
             </div>
         </>
