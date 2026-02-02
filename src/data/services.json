@@ -1,0 +1,395 @@
+{
+    "categories": [
+        {
+            "id": "websites",
+            "name": "Website Development",
+            "icon": "🌐",
+            "description": "Professional websites tailored to your business needs"
+        },
+        {
+            "id": "bots",
+            "name": "Bots & Automation",
+            "icon": "🤖",
+            "description": "Automate your business with intelligent bots"
+        },
+        {
+            "id": "design",
+            "name": "Design & Branding",
+            "icon": "🎨",
+            "description": "Create stunning visual identities"
+        },
+        {
+            "id": "video",
+            "name": "Video & Media",
+            "icon": "🎥",
+            "description": "Engaging video content for all platforms"
+        },
+        {
+            "id": "tools",
+            "name": "Tools & Custom Platforms",
+            "icon": "⚙️",
+            "description": "Custom tools to streamline your workflow"
+        },
+        {
+            "id": "hosting",
+            "name": "Hosting & Deployment",
+            "icon": "☁️",
+            "description": "Optional hosting and deployment services"
+        }
+    ],
+    "services": [
+        {
+            "id": "basic-website",
+            "category": "websites",
+            "name": "Basic Website (5 pages)",
+            "description": "Perfect for small businesses and personal portfolios",
+            "priceMin": 4999,
+            "priceMax": 7999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        },
+        {
+            "id": "business-website",
+            "category": "websites",
+            "name": "Business Website",
+            "description": "Professional website with all essential business features",
+            "priceMin": 8999,
+            "priceMax": 14999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": true
+        },
+        {
+            "id": "portfolio-website",
+            "category": "websites",
+            "name": "Portfolio Website",
+            "description": "Showcase your work with a stunning portfolio",
+            "priceMin": 3999,
+            "priceMax": 6999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        },
+        {
+            "id": "educational-website",
+            "category": "websites",
+            "name": "Educational Website",
+            "description": "Feature-rich platform for educational institutions",
+            "priceMin": 9999,
+            "priceMax": 19999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        },
+        {
+            "id": "ecommerce-website",
+            "category": "websites",
+            "name": "E-commerce Website",
+            "description": "Full-featured online store with payment integration",
+            "priceMin": 14999,
+            "priceMax": 39999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": true
+        },
+        {
+            "id": "landing-page",
+            "category": "websites",
+            "name": "Landing Page",
+            "description": "High-converting landing page for campaigns",
+            "priceMin": 2499,
+            "priceMax": 4999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        },
+        {
+            "id": "admin-panel",
+            "category": "websites",
+            "name": "Admin Panel / Dashboard",
+            "description": "Custom admin panel with full control",
+            "priceMin": 9999,
+            "priceMax": 24999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        },
+        {
+            "id": "custom-pages",
+            "category": "websites",
+            "name": "Custom Website Pages",
+            "description": "Additional pages for your website",
+            "priceMin": 999,
+            "priceMax": 999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false,
+            "perPage": true
+        },
+        {
+            "id": "whatsapp-bot",
+            "category": "bots",
+            "name": "WhatsApp Bot",
+            "description": "Automated WhatsApp messaging for customer support",
+            "priceMin": 2999,
+            "priceMax": 9999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": true
+        },
+        {
+            "id": "telegram-bot",
+            "category": "bots",
+            "name": "Telegram Bot",
+            "description": "Custom Telegram bot for your community",
+            "priceMin": 1999,
+            "priceMax": 6999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        },
+        {
+            "id": "ai-chatbot",
+            "category": "bots",
+            "name": "AI Chatbot",
+            "description": "Intelligent AI-powered conversational bot",
+            "priceMin": 4999,
+            "priceMax": 19999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": true
+        },
+        {
+            "id": "chat-widget",
+            "category": "bots",
+            "name": "Website Chat Widget",
+            "description": "Live chat widget for your website",
+            "priceMin": 1499,
+            "priceMax": 3999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        },
+        {
+            "id": "automation-workflow",
+            "category": "bots",
+            "name": "Automation Workflow (API / n8n)",
+            "description": "Custom automation workflows for your business",
+            "priceMin": 3999,
+            "priceMax": 14999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        },
+        {
+            "id": "logo-design",
+            "category": "design",
+            "name": "Logo Design",
+            "description": "Unique logo that represents your brand",
+            "priceMin": 999,
+            "priceMax": 4999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        },
+        {
+            "id": "website-banner",
+            "category": "design",
+            "name": "Website Banner",
+            "description": "Eye-catching banners for your website",
+            "priceMin": 499,
+            "priceMax": 1999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        },
+        {
+            "id": "ad-creative",
+            "category": "design",
+            "name": "Ad Creative / Poster",
+            "description": "Stunning ad creatives and posters",
+            "priceMin": 799,
+            "priceMax": 2999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        },
+        {
+            "id": "youtube-thumbnail",
+            "category": "design",
+            "name": "YouTube Thumbnail",
+            "description": "Click-worthy thumbnails for your videos",
+            "priceMin": 299,
+            "priceMax": 999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        },
+        {
+            "id": "uiux-design",
+            "category": "design",
+            "name": "UI/UX Design (Full App/Website)",
+            "description": "Complete UI/UX design for apps and websites",
+            "priceMin": 9999,
+            "priceMax": 29999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": true
+        },
+        {
+            "id": "ad-video",
+            "category": "video",
+            "name": "Advertisement Video",
+            "description": "Professional ad videos that convert",
+            "priceMin": 2999,
+            "priceMax": 14999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        },
+        {
+            "id": "promo-video",
+            "category": "video",
+            "name": "Promo Video",
+            "description": "Engaging promotional videos",
+            "priceMin": 3999,
+            "priceMax": 19999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": true
+        },
+        {
+            "id": "explainer-video",
+            "category": "video",
+            "name": "Explainer Video",
+            "description": "Clear explainer videos for complex topics",
+            "priceMin": 5999,
+            "priceMax": 24999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        },
+        {
+            "id": "youtube-intro-outro",
+            "category": "video",
+            "name": "YouTube Intro/Outro",
+            "description": "Professional intros and outros",
+            "priceMin": 999,
+            "priceMax": 2999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        },
+        {
+            "id": "reels-shorts",
+            "category": "video",
+            "name": "Reels / Shorts Video",
+            "description": "Viral-ready short-form content",
+            "priceMin": 499,
+            "priceMax": 1999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        },
+        {
+            "id": "website-builder-setup",
+            "category": "tools",
+            "name": "Website Builder Setup",
+            "description": "Setup and configure website builders",
+            "priceMin": 4999,
+            "priceMax": 14999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        },
+        {
+            "id": "custom-web-tool",
+            "category": "tools",
+            "name": "Custom Web Tool",
+            "description": "Bespoke tools for your specific needs",
+            "priceMin": 6999,
+            "priceMax": 29999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": true
+        },
+        {
+            "id": "appointment-booking",
+            "category": "tools",
+            "name": "Appointment Booking System",
+            "description": "Online booking system for appointments",
+            "priceMin": 2999,
+            "priceMax": 7999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        },
+        {
+            "id": "form-builder",
+            "category": "tools",
+            "name": "Form Builder with Backend",
+            "description": "Custom forms with data collection",
+            "priceMin": 1999,
+            "priceMax": 5999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        },
+        {
+            "id": "payment-gateway",
+            "category": "tools",
+            "name": "Payment Gateway Integration",
+            "description": "Integrate payment solutions into your website",
+            "priceMin": 1499,
+            "priceMax": 4999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        },
+        {
+            "id": "domain-setup",
+            "category": "hosting",
+            "name": "Domain Setup Assistance",
+            "description": "Help with domain registration and DNS",
+            "priceMin": 499,
+            "priceMax": 999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        },
+        {
+            "id": "hosting-setup",
+            "category": "hosting",
+            "name": "Hosting Setup (3rd-party)",
+            "description": "Setup on third-party hosting providers",
+            "priceMin": 999,
+            "priceMax": 2999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        },
+        {
+            "id": "firebase-vercel",
+            "category": "hosting",
+            "name": "Firebase / Vercel Deployment",
+            "description": "Deploy to modern hosting platforms",
+            "priceMin": 1499,
+            "priceMax": 3999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": true
+        },
+        {
+            "id": "website-maintenance",
+            "category": "hosting",
+            "name": "Website Maintenance (Monthly)",
+            "description": "Ongoing website maintenance and updates",
+            "priceMin": 999,
+            "priceMax": 4999,
+            "discountPrice": null,
+            "enabled": true,
+            "featured": false
+        }
+    ]
+}
