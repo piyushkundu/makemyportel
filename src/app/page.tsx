@@ -7,6 +7,8 @@ import { HeroButtons, FloatingCardIcons, CategoryIcon } from '@/components/IconC
 export default function Home() {
   // Get featured services for homepage
   const featuredServices = servicesData.services.filter(s => s.featured && s.enabled).slice(0, 6);
+  // Get services on sale (have discountPrice)
+  const saleServices = servicesData.services.filter(s => s.discountPrice && s.enabled).slice(0, 4);
   const categories = servicesData.categories;
 
   // Category images from Unsplash - all unique (matching category IDs)
@@ -97,6 +99,37 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Sale Section - Before Services */}
+      {saleServices.length > 0 && (
+        <section className="section sale-section" style={{ background: 'var(--bg-secondary)' }}>
+          <div className="container">
+            <div className="section-header">
+              <span className="section-tag sale-tag" style={{ background: 'linear-gradient(135deg, #ef4444, #f97316)', color: 'white' }}>🔥 Limited Time</span>
+              <h2>Hot <span style={{ background: 'linear-gradient(135deg, #ef4444, #f97316)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Deals</span></h2>
+              <p>
+                Grab these exclusive discounts before they're gone!
+              </p>
+            </div>
+
+            <div className="price-grid">
+              {saleServices.map((service) => (
+                <ServiceCard
+                  key={service.id}
+                  {...service}
+                  icon={categories.find(c => c.id === service.category)?.icon}
+                />
+              ))}
+            </div>
+
+            <div className="text-center" style={{ marginTop: 'var(--space-xl)' }}>
+              <Link href="/services" className="btn btn-primary btn-lg" style={{ background: 'linear-gradient(135deg, #ef4444, #f97316)' }}>
+                View All Deals 🔥
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Services Categories */}
       <section className="section" style={{ background: 'var(--bg-secondary)' }}>

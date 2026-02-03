@@ -45,7 +45,7 @@
             "description": "Perfect for small businesses and personal portfolios",
             "priceMin": 4999,
             "priceMax": 7999,
-            "discountPrice": null,
+            "discountPrice": 3499,
             "enabled": true,
             "featured": false
         },
@@ -67,7 +67,7 @@
             "description": "Showcase your work with a stunning portfolio",
             "priceMin": 3999,
             "priceMax": 6999,
-            "discountPrice": null,
+            "discountPrice": 2999,
             "enabled": true,
             "featured": false
         },
@@ -100,7 +100,7 @@
             "description": "High-converting landing page for campaigns",
             "priceMin": 2499,
             "priceMax": 4999,
-            "discountPrice": null,
+            "discountPrice": 1999,
             "enabled": true,
             "featured": false
         },
@@ -134,7 +134,7 @@
             "description": "Automated WhatsApp messaging for customer support",
             "priceMin": 2999,
             "priceMax": 9999,
-            "discountPrice": null,
+            "discountPrice": 1999,
             "enabled": true,
             "featured": true
         },

@@ -1,3 +1,125 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ========================================
+   TAILWIND PREMIUM COMPONENT LAYER
+   ======================================== */
+
+@layer components {
+
+  /* Premium Glass Morphism */
+  .glass {
+    @apply bg-white/80 backdrop-blur-xl border border-purple-100/50;
+  }
+
+  .glass-dark {
+    @apply bg-slate-900/80 backdrop-blur-xl border border-purple-500/20;
+  }
+
+  /* Premium Gradient Text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-purple-600 via-pink-500 to-purple-500 bg-clip-text text-transparent;
+  }
+
+  /* Premium Buttons */
+  .btn-premium {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold text-white rounded-xl;
+    @apply bg-gradient-to-r from-purple-600 to-purple-500;
+    @apply shadow-lg shadow-purple-500/30;
+    @apply hover:shadow-xl hover:shadow-purple-500/40 hover:-translate-y-1;
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .btn-premium-outline {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold rounded-xl;
+    @apply border-2 border-purple-500 text-purple-600;
+    @apply hover:bg-purple-500 hover:text-white hover:-translate-y-1;
+    @apply transition-all duration-300 ease-out;
+  }
+
+  /* Premium Cards */
+  .card-premium {
+    @apply bg-white rounded-3xl p-6 border border-purple-100/50;
+    @apply shadow-lg shadow-purple-500/5;
+    @apply hover:shadow-2xl hover:shadow-purple-500/15 hover:-translate-y-2;
+    @apply transition-all duration-500 ease-out;
+  }
+
+  /* Glow Effects */
+  .glow-purple {
+    box-shadow: 0 0 40px rgba(147, 51, 234, 0.3);
+  }
+
+  .glow-pink {
+    box-shadow: 0 0 40px rgba(236, 72, 153, 0.3);
+  }
+
+  /* Premium Badge */
+  .badge-premium {
+    @apply inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-full;
+    @apply bg-gradient-to-r from-purple-500/10 to-pink-500/10;
+    @apply text-purple-700 border border-purple-200/50;
+  }
+
+  /* Floating Animation */
+  .float-animation {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  /* Premium Section */
+  .section-premium {
+    @apply py-20 md:py-28 relative overflow-hidden;
+  }
+
+  /* Premium Container */
+  .container-premium {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+@layer utilities {
+
+  /* Gradient Backgrounds */
+  .bg-gradient-premium {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+  }
+
+  .bg-gradient-hero {
+    background: linear-gradient(135deg, rgba(103, 61, 230, 0.05) 0%, rgba(139, 92, 246, 0.08) 100%);
+  }
+
+  /* Text Shadows */
+  .text-shadow-sm {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .text-shadow-lg {
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Shimmer Effect */
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transform: translateX(-100%);
+    animation: shimmer 2s infinite;
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 /* MakeMyPortal - Premium Design System */
 
 /* Lenis Smooth Scroll */
@@ -72,50 +194,67 @@ html.lenis body {
   transform: scale(1.1) rotate(5deg);
 }
 
+/* ========================================
+   PREMIUM COLOR SYSTEM
+   Only 4 core colors for elegance
+   ======================================== */
+
 :root {
-  /* Primary Colors */
-  --primary: #00d4ff;
-  --primary-dark: #00a8cc;
-  --primary-light: #66e5ff;
-  --primary-glow: rgba(0, 212, 255, 0.4);
+  /* Core Premium Purple - Main Brand Color */
+  --primary: #673de6;
+  --primary-dark: #5025d1;
+  --primary-light: #8b5cf6;
+  --primary-lighter: #a78bfa;
+  --primary-glow: rgba(103, 61, 230, 0.4);
 
-  /* Accent Colors */
-  --accent: #ff6b35;
-  --accent-dark: #e55a2b;
-  --accent-light: #ff8f66;
-  --accent-glow: rgba(255, 107, 53, 0.4);
+  /* Secondary - Soft Violet Accent */
+  --accent: #a78bfa;
+  --accent-dark: #8b5cf6;
+  --accent-light: #c4b5fd;
+  --accent-glow: rgba(167, 139, 250, 0.4);
 
-  /* Success, Warning, Error */
-  --success: #00c853;
-  --warning: #ffc107;
-  --error: #ff5252;
+  /* Semantic Colors */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
 
-  /* Light Theme Backgrounds */
+  /* Premium Backgrounds */
   --bg-primary: #ffffff;
-  --bg-secondary: #f8fafc;
-  --bg-tertiary: #f1f5f9;
-  --bg-glass: rgba(255, 255, 255, 0.8);
-  --bg-glass-border: rgba(0, 0, 0, 0.1);
+  --bg-secondary: #faf8ff;
+  --bg-tertiary: #f5f3ff;
+  --bg-dark: #1e1b4b;
+  --bg-darker: #0f0a3c;
+  --bg-glass: rgba(255, 255, 255, 0.85);
+  --bg-glass-dark: rgba(30, 27, 75, 0.95);
+  --bg-glass-border: rgba(103, 61, 230, 0.1);
 
-  /* Light Theme Text */
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-tertiary: #94a3b8;
+  /* Premium Text Colors */
+  --text-primary: #1e1b4b;
+  --text-secondary: #4c4687;
+  --text-tertiary: #8b82b3;
+  --text-light: rgba(255, 255, 255, 0.9);
   --text-on-primary: #ffffff;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.15);
-  --shadow-glow: 0 0 30px var(--primary-glow);
-  --shadow-glow-accent: 0 0 30px var(--accent-glow);
+  /* Premium Shadows */
+  --shadow-sm: 0 1px 3px rgba(103, 61, 230, 0.05);
+  --shadow-md: 0 4px 12px rgba(103, 61, 230, 0.08);
+  --shadow-lg: 0 12px 32px rgba(103, 61, 230, 0.12);
+  --shadow-xl: 0 24px 48px rgba(103, 61, 230, 0.16);
+  --shadow-glow: 0 0 40px rgba(103, 61, 230, 0.35);
+  --shadow-glow-lg: 0 0 60px rgba(103, 61, 230, 0.5);
+
+  /* Premium Gradients */
+  --gradient-primary: linear-gradient(135deg, #673de6 0%, #8b5cf6 100%);
+  --gradient-premium: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+  --gradient-subtle: linear-gradient(135deg, #faf8ff 0%, #f5f3ff 100%);
+  --gradient-glow: radial-gradient(ellipse at center, rgba(103, 61, 230, 0.15), transparent 70%);
 
   /* Border Radius */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 16px;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
   --radius-xl: 24px;
+  --radius-2xl: 32px;
   --radius-full: 9999px;
 
   /* Spacing */
