@@ -6,14 +6,15 @@ import Lenis from '@studio-freight/lenis';
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         const lenis = new Lenis({
-            duration: 0.8, // Faster scrolling (was 1.5)
-            easing: (t) => 1 - Math.pow(1 - t, 2), // Quadratic ease-out (faster)
+            duration: 1.0, // Balanced smooth speed
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Expo ease-out (very smooth)
             orientation: 'vertical',
             gestureOrientation: 'vertical',
             smoothWheel: true,
             syncTouch: false,
             touchMultiplier: 2,
-            wheelMultiplier: 1.2, // Faster wheel response
+            wheelMultiplier: 1,
+            lerp: 0.1, // Smooth interpolation
         });
 
         // Use gsap-like animation loop
