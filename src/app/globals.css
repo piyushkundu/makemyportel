@@ -22,6 +22,56 @@ html.lenis body {
   pointer-events: none;
 }
 
+/* Premium Floating Icons */
+.floating-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.floating-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #1e1b4b;
+}
+
+/* Category Icon Badge Override */
+.category-icon-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.category-card:hover .category-icon-badge {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Category Icon Wrapper */
+.category-icon-wrapper {
+  transition: transform 0.3s ease;
+}
+
+.category-card:hover .category-icon-wrapper {
+  transform: scale(1.1) rotate(5deg);
+}
+
 :root {
   /* Primary Colors */
   --primary: #00d4ff;
