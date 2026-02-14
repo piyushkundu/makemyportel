@@ -1,37 +1,72 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { OrdersDB, InquiriesDB, UsersDB, Order, Inquiry, User } from '@/lib/db';
+import { Timestamp } from 'firebase/firestore';
 
-export default function AdminDashboard() {
-    // Mock data for dashboard
+export default function AdminDashboardPage() {
+    const [orders, setOrders] = useState<Order[]>([]);
+    const [inquiries, setInquiries] = useState<Inquiry[]>([]);
+    const [clients, setClients] = useState<User[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+                const [ordersData, inquiriesData, usersData] = await Promise.all([
+                    OrdersDB.getAll(),
+                    InquiriesDB.getAll(),
+                    UsersDB.getAll()
+                ]);
+                setOrders(ordersData);
+                setInquiries(inquiriesData);
+                setClients(usersData.filter(u => u.role === 'client'));
+            } catch (err) {
+                console.error('Failed to load dashboard data:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadData();
+    }, []);
+
+    const formatDate = (timestamp: Timestamp) => {
+        if (!timestamp?.toDate) return '—';
+        return timestamp.toDate().toLocaleDateString('en-IN', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+        });
+    };
+
+    const formatAmount = (amount: number) => {
+        return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount);
+    };
+
+    const totalRevenue = orders
+        .filter(o => o.status === 'completed')
+        .reduce((sum, o) => sum + (o.amount || 0), 0);
+
     const stats = [
-        { label: 'Total Services', value: '32', icon: '🛠️', color: 'primary', change: '+5%' },
-        { label: 'Active Orders', value: '12', icon: '📦', color: 'accent', change: '+12%' },
-        { label: 'New Inquiries', value: '8', icon: '💬', color: 'success', change: '+3' },
-        { label: 'Total Clients', value: '156', icon: '👥', color: 'warning', change: '+8%' },
+        { label: 'Total Orders', value: orders.length.toString(), icon: '📦', color: 'primary' },
+        { label: 'Active Orders', value: orders.filter(o => o.status === 'in_progress').length.toString(), icon: '🔄', color: 'accent' },
+        { label: 'New Inquiries', value: inquiries.filter(i => i.status === 'new').length.toString(), icon: '💬', color: 'success' },
+        { label: 'Total Clients', value: clients.length.toString(), icon: '👥', color: 'warning' },
     ];
 
-    const recentOrders = [
-        { id: 'ORD-001', client: 'Rahul Sharma', service: 'Business Website', amount: '₹12,999', status: 'In Progress', date: '2 Feb 2026' },
-        { id: 'ORD-002', client: 'Priya Patel', service: 'Logo Design', amount: '₹2,499', status: 'Completed', date: '1 Feb 2026' },
-        { id: 'ORD-003', client: 'Amit Kumar', service: 'WhatsApp Bot', amount: '₹5,999', status: 'Pending', date: '31 Jan 2026' },
-        { id: 'ORD-004', client: 'Sneha Gupta', service: 'E-commerce Website', amount: '₹24,999', status: 'In Progress', date: '30 Jan 2026' },
-        { id: 'ORD-005', client: 'Vikram Singh', service: 'Video Editing', amount: '₹3,999', status: 'Completed', date: '29 Jan 2026' },
-    ];
+    const recentOrders = orders.slice(0, 5);
+    const recentInquiries = inquiries.slice(0, 5);
 
-    const recentInquiries = [
-        { name: 'Vikram Singh', service: 'Custom Web Tool', time: '2 hours ago', email: 'vikram@email.com' },
-        { name: 'Anita Desai', service: 'AI Chatbot', time: '5 hours ago', email: 'anita@email.com' },
-        { name: 'Raj Malhotra', service: 'Portfolio Website', time: '1 day ago', email: 'raj@email.com' },
-        { name: 'Meera Shah', service: 'Social Media Kit', time: '2 days ago', email: 'meera@email.com' },
-    ];
-
-    const recentActivity = [
-        { action: 'New order placed', details: 'Rahul Sharma ordered Business Website', time: '2 hours ago', icon: '📦' },
-        { action: 'Payment received', details: '₹12,999 from Priya Patel', time: '5 hours ago', icon: '💰' },
-        { action: 'New client registered', details: 'Amit Kumar joined', time: '1 day ago', icon: '👤' },
-        { action: 'Order completed', details: 'Logo Design for Sneha Gupta', time: '2 days ago', icon: '✅' },
-    ];
+    if (loading) {
+        return (
+            <div className="admin-dashboard">
+                <div style={{ textAlign: 'center', padding: '4rem 2rem', color: '#9ca3af' }}>
+                    Loading dashboard data...
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="admin-dashboard">
@@ -60,7 +95,6 @@ export default function AdminDashboard() {
                             <div className="admin-stat-value">{stat.value}</div>
                             <div className="admin-stat-label">{stat.label}</div>
                         </div>
-                        <div className="admin-stat-change">{stat.change}</div>
                     </div>
                 ))}
             </div>
@@ -68,43 +102,47 @@ export default function AdminDashboard() {
             {/* Main Grid */}
             <div className="admin-grid">
                 {/* Recent Orders */}
-                <div className="admin-card admin-card-orders">
+                <div className="admin-card">
                     <div className="admin-card-header">
                         <h3>📦 Recent Orders</h3>
                         <Link href="/admin/orders" className="admin-card-link">View All →</Link>
                     </div>
-                    <div className="admin-table-wrapper">
-                        <table className="admin-table">
-                            <thead>
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th>Client</th>
-                                    <th>Service</th>
-                                    <th>Amount</th>
-                                    <th>Status</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {recentOrders.map((order) => (
-                                    <tr key={order.id}>
-                                        <td><strong>{order.id}</strong></td>
-                                        <td>{order.client}</td>
-                                        <td>{order.service}</td>
-                                        <td className="admin-amount">{order.amount}</td>
-                                        <td>
-                                            <span className={`admin-badge admin-badge-${order.status === 'Completed' ? 'success' :
-                                                    order.status === 'In Progress' ? 'primary' : 'warning'
-                                                }`}>
-                                                {order.status}
-                                            </span>
-                                        </td>
-                                        <td className="admin-date">{order.date}</td>
+
+                    {recentOrders.length > 0 ? (
+                        <div className="admin-table-wrapper">
+                            <table className="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Service</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody>
+                                    {recentOrders.map((order) => (
+                                        <tr key={order.id}>
+                                            <td><strong>{order.serviceName}</strong></td>
+                                            <td className="admin-amount">{formatAmount(order.amount)}</td>
+                                            <td>
+                                                <span className={`admin-badge ${order.status === 'completed' ? 'admin-badge-success' :
+                                                    order.status === 'in_progress' ? 'admin-badge-primary' :
+                                                        'admin-badge-warning'
+                                                    }`}>
+                                                    {order.status.replace('_', ' ')}
+                                                </span>
+                                            </td>
+                                            <td className="admin-date">{formatDate(order.createdAt)}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : (
+                        <div style={{ textAlign: 'center', padding: '2rem', color: '#9ca3af' }}>
+                            No orders yet
+                        </div>
+                    )}
                 </div>
 
                 {/* Sidebar Cards */}
@@ -112,73 +150,76 @@ export default function AdminDashboard() {
                     {/* Recent Inquiries */}
                     <div className="admin-card">
                         <div className="admin-card-header">
-                            <h3>💬 New Inquiries</h3>
+                            <h3>💬 Recent Inquiries</h3>
                             <Link href="/admin/inquiries" className="admin-card-link">View All →</Link>
                         </div>
-                        <div className="admin-inquiry-list">
-                            {recentInquiries.map((inquiry, i) => (
-                                <div key={i} className="admin-inquiry-item">
-                                    <div className="admin-inquiry-avatar">
-                                        {inquiry.name.charAt(0)}
+
+                        {recentInquiries.length > 0 ? (
+                            <div className="admin-inquiry-list">
+                                {recentInquiries.map((inq) => (
+                                    <div key={inq.id} className="admin-inquiry-item">
+                                        <div className="admin-inquiry-avatar">
+                                            {inq.name.charAt(0).toUpperCase()}
+                                        </div>
+                                        <div className="admin-inquiry-content">
+                                            <div className="admin-inquiry-name">{inq.name}</div>
+                                            <div className="admin-inquiry-service">{inq.subject}</div>
+                                        </div>
+                                        <div className="admin-inquiry-time">{formatDate(inq.createdAt)}</div>
                                     </div>
-                                    <div className="admin-inquiry-content">
-                                        <div className="admin-inquiry-name">{inquiry.name}</div>
-                                        <div className="admin-inquiry-service">{inquiry.service}</div>
-                                    </div>
-                                    <div className="admin-inquiry-time">{inquiry.time}</div>
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div style={{ textAlign: 'center', padding: '1.5rem', color: '#9ca3af' }}>
+                                No inquiries yet
+                            </div>
+                        )}
                     </div>
 
-                    {/* Recent Activity */}
+                    {/* Revenue Card */}
                     <div className="admin-card">
                         <div className="admin-card-header">
-                            <h3>⚡ Recent Activity</h3>
+                            <h3>💰 Revenue</h3>
                         </div>
-                        <div className="admin-activity-list">
-                            {recentActivity.map((activity, i) => (
-                                <div key={i} className="admin-activity-item">
-                                    <div className="admin-activity-icon">{activity.icon}</div>
-                                    <div className="admin-activity-content">
-                                        <div className="admin-activity-action">{activity.action}</div>
-                                        <div className="admin-activity-details">{activity.details}</div>
-                                    </div>
-                                    <div className="admin-activity-time">{activity.time}</div>
-                                </div>
-                            ))}
+                        <div style={{ textAlign: 'center', padding: '1rem 0' }}>
+                            <div style={{ fontSize: '2rem', fontWeight: 800, color: '#1e1b4b' }}>
+                                {formatAmount(totalRevenue)}
+                            </div>
+                            <div style={{ color: '#9ca3af', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+                                From {orders.filter(o => o.status === 'completed').length} completed orders
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Quick Actions */}
-            <div className="admin-card admin-quick-actions">
+            <div className="admin-quick-actions">
                 <h3>⚡ Quick Actions</h3>
                 <div className="admin-quick-actions-grid">
                     <Link href="/admin/services" className="admin-quick-action">
-                        <span className="admin-quick-action-icon">🛠️</span>
-                        <span>Manage Services</span>
+                        <div className="admin-quick-action-icon">🛠️</div>
+                        Manage Services
                     </Link>
                     <Link href="/admin/orders" className="admin-quick-action">
-                        <span className="admin-quick-action-icon">📦</span>
-                        <span>View Orders</span>
+                        <div className="admin-quick-action-icon">📦</div>
+                        View Orders
                     </Link>
                     <Link href="/admin/clients" className="admin-quick-action">
-                        <span className="admin-quick-action-icon">👥</span>
-                        <span>Manage Clients</span>
+                        <div className="admin-quick-action-icon">👥</div>
+                        Manage Clients
                     </Link>
                     <Link href="/admin/inquiries" className="admin-quick-action">
-                        <span className="admin-quick-action-icon">💬</span>
-                        <span>Check Inquiries</span>
+                        <div className="admin-quick-action-icon">💬</div>
+                        Inquiries
                     </Link>
                     <Link href="/admin/settings" className="admin-quick-action">
-                        <span className="admin-quick-action-icon">⚙️</span>
-                        <span>Settings</span>
+                        <div className="admin-quick-action-icon">⚙️</div>
+                        Settings
                     </Link>
                     <Link href="/" className="admin-quick-action">
-                        <span className="admin-quick-action-icon">🌐</span>
-                        <span>View Website</span>
+                        <div className="admin-quick-action-icon">🌐</div>
+                        View Website
                     </Link>
                 </div>
             </div>

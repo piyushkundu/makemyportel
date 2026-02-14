@@ -2,203 +2,345 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { useAuth } from '@/context/AuthContext';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import './dashboard.css';
+import {
+    LogOut,
+    User as UserIcon,
+    Package,
+    Headphones,
+    Sparkles,
+    ArrowRight,
+    ShoppingBag,
+    TrendingUp,
+    CheckCircle2,
+    Clock,
+    Send,
+    Phone,
+    MessageSquare,
+    PenLine,
+} from 'lucide-react';
 
 export default function DashboardPage() {
+    const { user, logout } = useAuth();
     const [activeTab, setActiveTab] = useState('orders');
 
-    // Mock user data
-    const user = {
-        name: 'Rahul Sharma',
-        email: 'rahul@example.com',
-        memberSince: 'October 2025',
+    // Empty by default — real orders will come from Firestore later
+    const orders: {
+        id: string;
+        service: string;
+        amount: string;
+        status: string;
+        date: string;
+        progress: number;
+    }[] = [];
+
+    const handleLogout = async () => {
+        await logout();
     };
 
-    // Mock orders
-    const orders = [
-        { id: 'ORD-001', service: 'Business Website', amount: '₹12,999', status: 'In Progress', date: '2026-02-01', progress: 60 },
-        { id: 'ORD-002', service: 'Logo Design', amount: '₹2,499', status: 'Completed', date: '2026-01-15', progress: 100 },
-        { id: 'ORD-003', service: 'WhatsApp Bot', amount: '₹5,999', status: 'Pending', date: '2026-02-02', progress: 0 },
+    const userName = user?.displayName || user?.email?.split('@')[0] || 'User';
+    const userEmail = user?.email || '';
+    const userAvatar = user?.photoURL;
+    const memberSince = user?.metadata?.creationTime
+        ? new Date(user.metadata.creationTime).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+        : 'Recently';
+
+    const totalOrders = orders.length;
+    const inProgress = orders.filter(o => o.status === 'In Progress').length;
+    const completed = orders.filter(o => o.status === 'Completed').length;
+
+    const tabs = [
+        { key: 'orders', label: 'My Orders', icon: Package },
+        { key: 'profile', label: 'Profile', icon: UserIcon },
+        { key: 'support', label: 'Support', icon: Headphones },
     ];
 
     return (
-        <div className="page-transition" style={{ paddingTop: '100px', minHeight: '100vh' }}>
-            <div className="container">
-                {/* Header */}
-                <div className="flex justify-between items-center" style={{ marginBottom: 'var(--space-2xl)' }}>
-                    <div>
-                        <h1 style={{ marginBottom: 'var(--space-xs)' }}>Welcome, {user.name}! 👋</h1>
-                        <p style={{ color: 'var(--text-secondary)' }}>Member since {user.memberSince}</p>
-                    </div>
-                    <Link href="/contact" className="btn btn-primary">
-                        + Request New Service
-                    </Link>
+        <ProtectedRoute>
+            <div className="dashboard-page">
+                {/* Background Decoration */}
+                <div className="dashboard-bg">
+                    <div className="dashboard-bg-orb dashboard-bg-orb-1" />
+                    <div className="dashboard-bg-orb dashboard-bg-orb-2" />
                 </div>
 
-                {/* Quick Stats */}
-                <div className="grid grid-cols-4" style={{ gap: 'var(--space-lg)', marginBottom: 'var(--space-2xl)' }}>
-                    <div className="glass-card text-center">
-                        <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--primary)' }}>3</div>
-                        <div style={{ color: 'var(--text-secondary)' }}>Total Orders</div>
+                <div className="dashboard-container">
+                    {/* Welcome Header */}
+                    <div className="dashboard-header">
+                        <div className="dashboard-header-left">
+                            <div className="dashboard-avatar-wrapper">
+                                {userAvatar ? (
+                                    <img
+                                        src={userAvatar}
+                                        alt={userName}
+                                        className="dashboard-avatar"
+                                        referrerPolicy="no-referrer"
+                                    />
+                                ) : (
+                                    <div className="dashboard-avatar-fallback">
+                                        {userName.charAt(0).toUpperCase()}
+                                    </div>
+                                )}
+                                <div className="dashboard-avatar-status" />
+                            </div>
+                            <div>
+                                <h1 className="dashboard-welcome">
+                                    Welcome back, <span className="dashboard-welcome-name">{userName}</span>! 👋
+                                </h1>
+                                <p className="dashboard-meta">
+                                    {userEmail} &bull; Member since {memberSince}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="dashboard-header-actions">
+                            <Link href="/services" className="dashboard-btn-primary">
+                                <Sparkles size={16} />
+                                Request Service
+                                <ArrowRight size={16} />
+                            </Link>
+                            <button onClick={handleLogout} className="dashboard-btn-outline">
+                                <LogOut size={16} />
+                                Logout
+                            </button>
+                        </div>
                     </div>
-                    <div className="glass-card text-center">
-                        <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--accent)' }}>1</div>
-                        <div style={{ color: 'var(--text-secondary)' }}>In Progress</div>
-                    </div>
-                    <div className="glass-card text-center">
-                        <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--success)' }}>1</div>
-                        <div style={{ color: 'var(--text-secondary)' }}>Completed</div>
-                    </div>
-                    <div className="glass-card text-center">
-                        <div style={{ fontSize: '2rem', fontWeight: 800 }}>₹21,497</div>
-                        <div style={{ color: 'var(--text-secondary)' }}>Total Spent</div>
-                    </div>
-                </div>
 
-                {/* Tabs */}
-                <div className="tabs" style={{ marginBottom: 'var(--space-xl)' }}>
-                    <button
-                        className={`tab ${activeTab === 'orders' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('orders')}
-                    >
-                        📦 My Orders
-                    </button>
-                    <button
-                        className={`tab ${activeTab === 'profile' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('profile')}
-                    >
-                        👤 Profile
-                    </button>
-                    <button
-                        className={`tab ${activeTab === 'support' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('support')}
-                    >
-                        💬 Support
-                    </button>
-                </div>
+                    {/* Stats Cards */}
+                    <div className="dashboard-stats">
+                        <div className="dashboard-stat-card">
+                            <div className="dashboard-stat-icon" style={{ background: 'linear-gradient(135deg, #673de6, #8b5cf6)' }}>
+                                <ShoppingBag size={20} color="white" />
+                            </div>
+                            <div className="dashboard-stat-value">{totalOrders}</div>
+                            <div className="dashboard-stat-label">Total Orders</div>
+                        </div>
+                        <div className="dashboard-stat-card">
+                            <div className="dashboard-stat-icon" style={{ background: 'linear-gradient(135deg, #f59e0b, #fbbf24)' }}>
+                                <Clock size={20} color="white" />
+                            </div>
+                            <div className="dashboard-stat-value">{inProgress}</div>
+                            <div className="dashboard-stat-label">In Progress</div>
+                        </div>
+                        <div className="dashboard-stat-card">
+                            <div className="dashboard-stat-icon" style={{ background: 'linear-gradient(135deg, #10b981, #34d399)' }}>
+                                <CheckCircle2 size={20} color="white" />
+                            </div>
+                            <div className="dashboard-stat-value">{completed}</div>
+                            <div className="dashboard-stat-label">Completed</div>
+                        </div>
+                        <div className="dashboard-stat-card">
+                            <div className="dashboard-stat-icon" style={{ background: 'linear-gradient(135deg, #ec4899, #f472b6)' }}>
+                                <TrendingUp size={20} color="white" />
+                            </div>
+                            <div className="dashboard-stat-value">₹0</div>
+                            <div className="dashboard-stat-label">Total Spent</div>
+                        </div>
+                    </div>
 
-                {/* Orders Tab */}
-                {activeTab === 'orders' && (
-                    <div>
-                        {orders.map((order) => (
-                            <div key={order.id} className="glass-card" style={{ marginBottom: 'var(--space-lg)' }}>
-                                <div className="flex justify-between items-start" style={{ marginBottom: 'var(--space-md)' }}>
-                                    <div>
-                                        <div className="flex items-center gap-md">
-                                            <h3 style={{ marginBottom: 0 }}>{order.service}</h3>
-                                            <span className={`badge ${order.status === 'Completed' ? 'badge-success' :
-                                                    order.status === 'In Progress' ? 'badge-primary' :
-                                                        'badge-warning'
-                                                }`}>
-                                                {order.status}
-                                            </span>
+                    {/* Tabs */}
+                    <div className="dashboard-tabs">
+                        {tabs.map((tab) => {
+                            const IconComp = tab.icon;
+                            return (
+                                <button
+                                    key={tab.key}
+                                    className={`dashboard-tab ${activeTab === tab.key ? 'active' : ''}`}
+                                    onClick={() => setActiveTab(tab.key)}
+                                >
+                                    <IconComp size={16} />
+                                    {tab.label}
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    {/* Tab Content */}
+                    <div className="dashboard-content">
+                        {/* Orders Tab */}
+                        {activeTab === 'orders' && (
+                            <div className="dashboard-tab-content">
+                                {orders.length > 0 ? (
+                                    orders.map((order) => (
+                                        <div key={order.id} className="dashboard-order-card">
+                                            <div className="dashboard-order-header">
+                                                <div>
+                                                    <h3 className="dashboard-order-title">{order.service}</h3>
+                                                    <p className="dashboard-order-meta">
+                                                        {order.id} &bull; {order.date}
+                                                    </p>
+                                                </div>
+                                                <div className="dashboard-order-right">
+                                                    <span className={`dashboard-badge ${order.status === 'Completed' ? 'badge-success' :
+                                                            order.status === 'In Progress' ? 'badge-primary' :
+                                                                'badge-warning'
+                                                        }`}>
+                                                        {order.status}
+                                                    </span>
+                                                    <span className="dashboard-order-amount">{order.amount}</span>
+                                                </div>
+                                            </div>
+                                            <div className="dashboard-progress-track">
+                                                <div
+                                                    className="dashboard-progress-bar"
+                                                    style={{
+                                                        width: `${order.progress}%`,
+                                                        background: order.progress === 100
+                                                            ? 'linear-gradient(90deg, #10b981, #34d399)'
+                                                            : 'linear-gradient(90deg, #673de6, #8b5cf6)',
+                                                    }}
+                                                />
+                                            </div>
+                                            <p className="dashboard-progress-label">{order.progress}% complete</p>
                                         </div>
-                                        <p style={{ fontSize: '0.875rem', color: 'var(--text-tertiary)' }}>
-                                            Order ID: {order.id} • Ordered on {order.date}
+                                    ))
+                                ) : (
+                                    /* Empty State */
+                                    <div className="dashboard-empty">
+                                        <div className="dashboard-empty-icon">
+                                            <Package size={48} strokeWidth={1.2} />
+                                        </div>
+                                        <h3 className="dashboard-empty-title">No orders yet</h3>
+                                        <p className="dashboard-empty-text">
+                                            You haven&apos;t placed any orders yet. Explore our services and get started with your first project!
                                         </p>
+                                        <Link href="/services" className="dashboard-btn-primary" style={{ marginTop: '1rem' }}>
+                                            <Sparkles size={16} />
+                                            Browse Services
+                                            <ArrowRight size={16} />
+                                        </Link>
                                     </div>
-                                    <div style={{ textAlign: 'right' }}>
-                                        <div style={{ fontSize: '1.25rem', fontWeight: 700 }}>{order.amount}</div>
-                                    </div>
-                                </div>
+                                )}
+                            </div>
+                        )}
 
-                                {/* Progress Bar */}
-                                <div style={{
-                                    background: 'var(--bg-tertiary)',
-                                    borderRadius: 'var(--radius-full)',
-                                    height: '8px',
-                                    marginBottom: 'var(--space-sm)'
-                                }}>
-                                    <div style={{
-                                        background: order.progress === 100 ? 'var(--success)' : 'linear-gradient(90deg, var(--primary), var(--accent))',
-                                        width: `${order.progress}%`,
-                                        height: '100%',
-                                        borderRadius: 'var(--radius-full)',
-                                        transition: 'width 0.3s ease'
-                                    }} />
-                                </div>
-                                <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
-                                    Progress: {order.progress}%
+                        {/* Profile Tab */}
+                        {activeTab === 'profile' && (
+                            <div className="dashboard-tab-content">
+                                <div className="dashboard-profile-card">
+                                    <div className="dashboard-profile-header">
+                                        <div className="dashboard-profile-avatar-wrapper">
+                                            {userAvatar ? (
+                                                <img
+                                                    src={userAvatar}
+                                                    alt={userName}
+                                                    className="dashboard-profile-avatar"
+                                                    referrerPolicy="no-referrer"
+                                                />
+                                            ) : (
+                                                <div className="dashboard-profile-avatar-fallback">
+                                                    <UserIcon size={36} color="white" />
+                                                </div>
+                                            )}
+                                            <button className="dashboard-profile-edit-badge">
+                                                <PenLine size={12} />
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <h3 className="dashboard-profile-name">{userName}</h3>
+                                            <p className="dashboard-profile-email">{userEmail}</p>
+                                            <p className="dashboard-profile-since">Member since {memberSince}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="dashboard-form-section">
+                                        <h4 className="dashboard-form-heading">Personal Information</h4>
+                                        <div className="dashboard-form-grid">
+                                            <div className="dashboard-form-group">
+                                                <label className="dashboard-form-label">Full Name</label>
+                                                <input type="text" className="dashboard-form-input" defaultValue={userName} />
+                                            </div>
+                                            <div className="dashboard-form-group">
+                                                <label className="dashboard-form-label">Email</label>
+                                                <input type="email" className="dashboard-form-input" defaultValue={userEmail} readOnly style={{ opacity: 0.6 }} />
+                                            </div>
+                                            <div className="dashboard-form-group">
+                                                <label className="dashboard-form-label">Phone</label>
+                                                <input type="tel" className="dashboard-form-input" placeholder="+91 XXXXXXXXXX" />
+                                            </div>
+                                            <div className="dashboard-form-group">
+                                                <label className="dashboard-form-label">Company (Optional)</label>
+                                                <input type="text" className="dashboard-form-input" placeholder="Your company name" />
+                                            </div>
+                                        </div>
+                                        <button className="dashboard-btn-primary" style={{ marginTop: '1.5rem' }}>
+                                            Save Changes
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        ))}
+                        )}
 
-                        {orders.length === 0 && (
-                            <div className="empty-state">
-                                <div className="empty-state-icon">📦</div>
-                                <h3 className="empty-state-title">No orders yet</h3>
-                                <p className="empty-state-description">
-                                    You haven&apos;t placed any orders yet. Get started by requesting a service!
-                                </p>
-                                <Link href="/services" className="btn btn-primary" style={{ marginTop: 'var(--space-lg)' }}>
-                                    Browse Services
-                                </Link>
+                        {/* Support Tab */}
+                        {activeTab === 'support' && (
+                            <div className="dashboard-tab-content">
+                                <div className="dashboard-support-grid">
+                                    {/* Quick Help */}
+                                    <div className="dashboard-support-card">
+                                        <div className="dashboard-support-card-header">
+                                            <Headphones size={20} />
+                                            <h3>Quick Help</h3>
+                                        </div>
+                                        <div className="dashboard-support-links">
+                                            <Link href="/contact" className="dashboard-support-link">
+                                                <div className="dashboard-support-link-icon" style={{ background: 'linear-gradient(135deg, #673de6, #8b5cf6)' }}>
+                                                    <Send size={16} color="white" />
+                                                </div>
+                                                <div>
+                                                    <p className="dashboard-support-link-title">Email Support</p>
+                                                    <p className="dashboard-support-link-sub">Get help via email</p>
+                                                </div>
+                                                <ArrowRight size={16} className="dashboard-support-arrow" />
+                                            </Link>
+                                            <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" className="dashboard-support-link">
+                                                <div className="dashboard-support-link-icon" style={{ background: 'linear-gradient(135deg, #25d366, #128c7e)' }}>
+                                                    <MessageSquare size={16} color="white" />
+                                                </div>
+                                                <div>
+                                                    <p className="dashboard-support-link-title">WhatsApp Chat</p>
+                                                    <p className="dashboard-support-link-sub">Quick chat on WhatsApp</p>
+                                                </div>
+                                                <ArrowRight size={16} className="dashboard-support-arrow" />
+                                            </a>
+                                            <a href="tel:+919876543210" className="dashboard-support-link">
+                                                <div className="dashboard-support-link-icon" style={{ background: 'linear-gradient(135deg, #3b82f6, #2563eb)' }}>
+                                                    <Phone size={16} color="white" />
+                                                </div>
+                                                <div>
+                                                    <p className="dashboard-support-link-title">Call Us</p>
+                                                    <p className="dashboard-support-link-sub">Talk to our team</p>
+                                                </div>
+                                                <ArrowRight size={16} className="dashboard-support-arrow" />
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    {/* Raise Ticket */}
+                                    <div className="dashboard-support-card">
+                                        <div className="dashboard-support-card-header">
+                                            <Send size={20} />
+                                            <h3>Raise a Ticket</h3>
+                                        </div>
+                                        <div className="dashboard-form-group">
+                                            <label className="dashboard-form-label">Subject</label>
+                                            <input type="text" className="dashboard-form-input" placeholder="Brief description" />
+                                        </div>
+                                        <div className="dashboard-form-group" style={{ marginTop: '1rem' }}>
+                                            <label className="dashboard-form-label">Message</label>
+                                            <textarea className="dashboard-form-input dashboard-textarea" placeholder="Describe your issue..." />
+                                        </div>
+                                        <button className="dashboard-btn-primary" style={{ marginTop: '1.5rem', width: '100%' }}>
+                                            <Send size={16} />
+                                            Submit Ticket
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         )}
                     </div>
-                )}
-
-                {/* Profile Tab */}
-                {activeTab === 'profile' && (
-                    <div className="glass-card" style={{ maxWidth: '600px' }}>
-                        <h3 style={{ marginBottom: 'var(--space-xl)' }}>Profile Information</h3>
-
-                        <div className="form-group" style={{ marginBottom: 'var(--space-lg)' }}>
-                            <label className="form-label">Full Name</label>
-                            <input type="text" className="form-input" defaultValue={user.name} />
-                        </div>
-
-                        <div className="form-group" style={{ marginBottom: 'var(--space-lg)' }}>
-                            <label className="form-label">Email</label>
-                            <input type="email" className="form-input" defaultValue={user.email} />
-                        </div>
-
-                        <div className="form-group" style={{ marginBottom: 'var(--space-lg)' }}>
-                            <label className="form-label">Phone</label>
-                            <input type="tel" className="form-input" placeholder="+91 XXXXXXXXXX" />
-                        </div>
-
-                        <div className="form-group" style={{ marginBottom: 'var(--space-xl)' }}>
-                            <label className="form-label">Company (Optional)</label>
-                            <input type="text" className="form-input" placeholder="Your company name" />
-                        </div>
-
-                        <button className="btn btn-primary">Save Changes</button>
-                    </div>
-                )}
-
-                {/* Support Tab */}
-                {activeTab === 'support' && (
-                    <div className="grid grid-cols-2" style={{ gap: 'var(--space-xl)' }}>
-                        <div className="glass-card">
-                            <h3 style={{ marginBottom: 'var(--space-lg)' }}>Quick Help</h3>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
-                                <Link href="/contact" className="btn btn-outline" style={{ justifyContent: 'flex-start' }}>
-                                    📧 Email Support
-                                </Link>
-                                <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" className="btn btn-outline" style={{ justifyContent: 'flex-start' }}>
-                                    💬 WhatsApp Chat
-                                </a>
-                                <a href="tel:+919876543210" className="btn btn-outline" style={{ justifyContent: 'flex-start' }}>
-                                    📞 Call Us
-                                </a>
-                            </div>
-                        </div>
-
-                        <div className="glass-card">
-                            <h3 style={{ marginBottom: 'var(--space-lg)' }}>Raise a Ticket</h3>
-                            <div className="form-group" style={{ marginBottom: 'var(--space-md)' }}>
-                                <label className="form-label">Subject</label>
-                                <input type="text" className="form-input" placeholder="Brief description of your issue" />
-                            </div>
-                            <div className="form-group" style={{ marginBottom: 'var(--space-lg)' }}>
-                                <label className="form-label">Message</label>
-                                <textarea className="form-input form-textarea" placeholder="Describe your issue in detail..." />
-                            </div>
-                            <button className="btn btn-primary">Submit Ticket</button>
-                        </div>
-                    </div>
-                )}
+                </div>
             </div>
-        </div>
+        </ProtectedRoute>
     );
 }

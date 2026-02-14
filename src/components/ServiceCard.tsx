@@ -1,5 +1,8 @@
+'use client';
+
 import Link from 'next/link';
 import { Sparkles, ArrowRight, Tag } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 interface ServiceCardProps {
     id: string;
@@ -22,8 +25,9 @@ export default function ServiceCard({
     priceMax,
     discountPrice,
     featured = false,
-    perPage = false,
 }: ServiceCardProps) {
+    const { user } = useAuth();
+
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('en-IN').format(price);
     };
@@ -32,10 +36,15 @@ export default function ServiceCard({
     const displayPrice = hasDiscount ? discountPrice : priceMin;
     const isSinglePrice = priceMin === priceMax;
 
+    // Auth-aware link: if logged in → contact, if not → login with redirect
+    const ctaHref = user
+        ? `/contact?service=${id}`
+        : `/login?redirect=${encodeURIComponent(`/contact?service=${id}`)}&service=${id}`;
+
     return (
         <div className={`relative bg-white rounded-3xl p-6 border transition-all duration-500 hover:-translate-y-2 ${featured
-                ? 'border-purple-200 shadow-xl shadow-purple-500/10 ring-2 ring-purple-500/20'
-                : 'border-slate-200/80 shadow-lg shadow-slate-500/5 hover:shadow-xl hover:shadow-purple-500/10 hover:border-purple-200'
+            ? 'border-purple-200 shadow-xl shadow-purple-500/10 ring-2 ring-purple-500/20'
+            : 'border-slate-200/80 shadow-lg shadow-slate-500/5 hover:shadow-xl hover:shadow-purple-500/10 hover:border-purple-200'
             }`}>
             {/* Badges */}
             {featured && (
@@ -74,15 +83,14 @@ export default function ServiceCard({
                 {!isSinglePrice && (
                     <span className="text-slate-400">– ₹{formatPrice(priceMax)}</span>
                 )}
-                {perPage && <span className="text-slate-400 text-sm">/ page</span>}
             </div>
 
             {/* CTA Button */}
             <Link
-                href={`/contact?service=${id}`}
+                href={ctaHref}
                 className={`group flex items-center justify-center gap-2 w-full px-6 py-3.5 rounded-xl font-semibold transition-all duration-300 ${featured
-                        ? 'bg-gradient-to-r from-purple-600 to-purple-500 text-white shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40'
-                        : 'bg-slate-100 text-slate-700 hover:bg-purple-600 hover:text-white'
+                    ? 'bg-gradient-to-r from-purple-600 to-purple-500 text-white shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40'
+                    : 'bg-slate-100 text-slate-700 hover:bg-purple-600 hover:text-white'
                     }`}
             >
                 Get Started

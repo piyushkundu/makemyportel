@@ -350,12 +350,22 @@ p {
 }
 
 a {
-  color: var(--primary);
   text-decoration: none;
   transition: color var(--transition-fast);
 }
 
-a:hover {
+/* Only apply purple hover to content links, not nav/buttons */
+main a:not([class]),
+.footer a:not([class]),
+p a,
+.glass-card a:not(.btn) {
+  color: var(--primary);
+}
+
+main a:not([class]):hover,
+.footer a:not([class]):hover,
+p a:hover,
+.glass-card a:not(.btn):hover {
   color: var(--primary-light);
 }
 

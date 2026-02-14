@@ -1,0 +1,207 @@
+/* =============================================
+   LIVE EDIT MODE STYLES
+   ============================================= */
+
+/* Floating Edit Bar */
+.admin-edit-bar {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid #e8e0ff;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(103, 61, 230, 0.15), 0 2px 8px rgba(0, 0, 0, 0.05);
+    font-family: inherit;
+    animation: editBarSlideIn 0.3s ease;
+}
+
+@keyframes editBarSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.edit-bar-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #673de6;
+    padding: 0 8px;
+}
+
+.edit-bar-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ef4444;
+    animation: editDotPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes editDotPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}
+
+.edit-bar-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.edit-bar-enter {
+    background: linear-gradient(135deg, #673de6, #8b5cf6);
+    color: white;
+    box-shadow: 0 4px 12px rgba(103, 61, 230, 0.3);
+}
+
+.edit-bar-enter:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(103, 61, 230, 0.4);
+}
+
+.edit-bar-save {
+    background: linear-gradient(135deg, #10b981, #34d399);
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.edit-bar-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.edit-bar-save:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.edit-bar-exit {
+    background: #f3f0ff;
+    color: #673de6;
+}
+
+.edit-bar-exit:hover {
+    background: #e8e0ff;
+}
+
+.edit-bar-saved {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: #10b981;
+    font-weight: 600;
+    padding: 0 8px;
+}
+
+.edit-bar-spin {
+    animation: editSpin 1s linear infinite;
+}
+
+@keyframes editSpin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ---- Editable Text Elements ---- */
+
+.editable-text {
+    transition: all 0.2s ease;
+}
+
+.editable-active {
+    outline: 2px dashed rgba(103, 61, 230, 0.35);
+    outline-offset: 4px;
+    border-radius: 4px;
+    cursor: text;
+    position: relative;
+    min-height: 1em;
+}
+
+.editable-active:hover {
+    outline-color: rgba(103, 61, 230, 0.6);
+    background: rgba(103, 61, 230, 0.03);
+}
+
+.editable-active:focus {
+    outline: 2px solid #673de6;
+    outline-offset: 4px;
+    background: rgba(103, 61, 230, 0.04);
+    box-shadow: 0 0 0 6px rgba(103, 61, 230, 0.06);
+}
+
+/* Edit hint on hover */
+.editable-active::after {
+    content: '✏️';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 0.65rem;
+    background: #673de6;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+
+.editable-active:hover::after {
+    opacity: 1;
+}
+
+.editable-active:focus::after {
+    opacity: 0;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .admin-edit-bar {
+        bottom: 12px;
+        right: 12px;
+        left: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}

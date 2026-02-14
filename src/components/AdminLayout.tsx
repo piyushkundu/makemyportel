@@ -1,8 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { ReactNode, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { ReactNode, useState, useEffect } from 'react';
+import { onAuthStateChanged, signOut, User } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 import {
     LayoutDashboard,
     Wrench,
@@ -18,7 +20,10 @@ import {
     Menu,
     X,
     Rocket,
-    User
+    User as UserIcon,
+    Lock,
+    Loader2,
+    Pencil
 } from 'lucide-react';
 
 const sidebarLinks = [
@@ -30,10 +35,131 @@ const sidebarLinks = [
     { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 
+// Admin Login Component (inline — no signup, no forgot password)
+function AdminLogin() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError('');
+        setLoading(true);
+
+        try {
+            const { signInWithEmailAndPassword } = await import('firebase/auth');
+            await signInWithEmailAndPassword(auth, email, password);
+        } catch (err: unknown) {
+            const msg = err instanceof Error ? err.message : 'Login failed';
+            if (msg.includes('invalid-credential') || msg.includes('wrong-password') || msg.includes('user-not-found')) {
+                setError('Invalid email or password');
+            } else if (msg.includes('too-many-requests')) {
+                setError('Too many attempts. Try again later.');
+            } else {
+                setError('Login failed. Please try again.');
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="admin-login-page">
+            <div className="admin-login-card">
+                <div className="admin-login-header">
+                    <div className="admin-login-logo">
+                        <Lock size={28} />
+                    </div>
+                    <h1 className="admin-login-title">Admin Panel</h1>
+                    <p className="admin-login-subtitle">Sign in to access dashboard</p>
+                </div>
+
+                {error && (
+                    <div className="admin-login-error" style={{ marginBottom: '1rem' }}>
+                        {error}
+                    </div>
+                )}
+
+                <form className="admin-login-form" onSubmit={handleLogin}>
+                    <div className="admin-login-field">
+                        <label className="admin-login-label">Email</label>
+                        <input
+                            type="email"
+                            className="admin-login-input"
+                            placeholder="admin@makemyportal.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="admin-login-field">
+                        <label className="admin-login-label">Password</label>
+                        <input
+                            type="password"
+                            className="admin-login-input"
+                            placeholder="••••••••"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <button type="submit" className="admin-login-btn" disabled={loading}>
+                        {loading ? 'Signing in...' : 'Sign In'}
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+}
+
+// Loading screen
+function AdminLoading() {
+    return (
+        <div className="admin-login-page">
+            <div style={{ textAlign: 'center' }}>
+                <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', color: '#673de6' }} />
+                <p style={{ marginTop: '1rem', color: '#6b7280' }}>Loading...</p>
+            </div>
+            <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+        </div>
+    );
+}
+
 export default function AdminLayout({ children }: { children: ReactNode }) {
     const pathname = usePathname();
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [user, setUser] = useState<User | null>(null);
+    const [authLoading, setAuthLoading] = useState(true);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+            setUser(firebaseUser);
+            setAuthLoading(false);
+        });
+        return () => unsubscribe();
+    }, []);
+
+    const handleLogout = async () => {
+        await signOut(auth);
+        setDropdownOpen(false);
+    };
+
+    // Show loading while checking auth
+    if (authLoading) {
+        return <AdminLoading />;
+    }
+
+    // Show login if not authenticated
+    if (!user) {
+        return <AdminLogin />;
+    }
+
+    const displayName = user.displayName || user.email?.split('@')[0] || 'Admin';
+    const initials = displayName.charAt(0).toUpperCase();
 
     return (
         <div className="admin-layout">
@@ -114,11 +240,15 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 </nav>
 
                 <div className="admin-sidebar-footer">
+                    <Link href="/?editMode=true" target="_blank" className="admin-nav-link" style={{ color: '#ef4444' }}>
+                        <span className="admin-nav-icon" style={{ background: 'linear-gradient(135deg, #ef4444, #f97316)', color: 'white' }}><Pencil size={20} /></span>
+                        <span className="admin-nav-text" style={{ fontWeight: 700 }}>Live Edit</span>
+                    </Link>
                     <Link href="/" className="admin-nav-link">
                         <span className="admin-nav-icon"><Globe size={20} /></span>
                         <span className="admin-nav-text">View Website</span>
                     </Link>
-                    <button className="admin-nav-link admin-logout">
+                    <button className="admin-nav-link admin-logout" onClick={handleLogout}>
                         <span className="admin-nav-icon"><LogOut size={20} /></span>
                         <span className="admin-nav-text">Logout</span>
                     </button>
@@ -159,7 +289,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                         {/* Notifications */}
                         <button className="admin-icon-btn admin-notification">
                             <Bell size={20} />
-                            <span className="admin-notification-badge">3</span>
                         </button>
 
                         {/* User Menu */}
@@ -168,10 +297,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                                 className="admin-user-btn"
                                 onClick={() => setDropdownOpen(!dropdownOpen)}
                             >
-                                <div className="admin-user-avatar">A</div>
+                                <div className="admin-user-avatar">{initials}</div>
                                 <div className="admin-user-info">
-                                    <div className="admin-user-name">Admin User</div>
-                                    <div className="admin-user-role">Super Admin</div>
+                                    <div className="admin-user-name">{displayName}</div>
+                                    <div className="admin-user-role">Admin</div>
                                 </div>
                                 <span className="admin-user-arrow">
                                     <ChevronDown size={16} />
@@ -180,14 +309,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
                             {dropdownOpen && (
                                 <div className="admin-dropdown">
-                                    <Link href="/admin/settings" className="admin-dropdown-item">
+                                    <Link href="/admin/settings" className="admin-dropdown-item" onClick={() => setDropdownOpen(false)}>
                                         <Settings size={16} /> Settings
                                     </Link>
-                                    <Link href="/admin/profile" className="admin-dropdown-item">
-                                        <User size={16} /> Profile
-                                    </Link>
                                     <hr className="admin-dropdown-divider" />
-                                    <button className="admin-dropdown-item admin-dropdown-logout">
+                                    <button className="admin-dropdown-item admin-dropdown-logout" onClick={handleLogout}>
                                         <LogOut size={16} /> Logout
                                     </button>
                                 </div>
