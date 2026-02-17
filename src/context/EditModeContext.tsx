@@ -39,13 +39,43 @@ export function EditModeProvider({ children }: { children: ReactNode }) {
     const [pendingChanges, setPendingChanges] = useState<Record<string, string>>({});
     const [saving, setSaving] = useState(false);
 
-    // Check auth — any logged in user is treated as admin
-    // (since we don't have sign-up, only manually created Firebase Auth users exist)
+    // Check auth and verify admin role from Firestore
     useEffect(() => {
-        const unsub = onAuthStateChanged(auth, (firebaseUser) => {
+        const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
             setUser(firebaseUser);
-            // Any authenticated user can use edit mode
-            setIsAdmin(!!firebaseUser);
+            if (firebaseUser) {
+                try {
+                    // Check by UID first (admin setup page saves with UID as doc ID)
+                    const { doc: firestoreDoc, getDoc } = await import('firebase/firestore');
+                    const { db } = await import('@/lib/firebase');
+
+                    // Try getting user doc by UID
+                    const userDocRef = firestoreDoc(db, 'users', firebaseUser.uid);
+                    const userDocSnap = await getDoc(userDocRef);
+
+                    if (userDocSnap.exists() && userDocSnap.data().role === 'admin') {
+                        setIsAdmin(true);
+                        return;
+                    }
+
+                    // Fallback: check by email query
+                    const { collection, query, where, getDocs } = await import('firebase/firestore');
+                    const q = query(collection(db, 'users'), where('email', '==', firebaseUser.email));
+                    const snapshot = await getDocs(q);
+                    if (!snapshot.empty) {
+                        const userData = snapshot.docs[0].data();
+                        setIsAdmin(userData.role === 'admin');
+                    } else {
+                        setIsAdmin(false);
+                    }
+                } catch (err) {
+                    console.error('Admin check failed:', err);
+                    setIsAdmin(false);
+                }
+            } else {
+                setIsAdmin(false);
+                setEditMode(false);
+            }
         });
         return () => unsub();
     }, []);

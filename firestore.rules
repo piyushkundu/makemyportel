@@ -1,0 +1,101 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Helper: Check if user is admin ───
+    function isAdmin() {
+      return request.auth != null &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // ─── Helper: Check if user is authenticated ───
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // ─── Helper: Check if user owns this document ───
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    // ═══════════════════════════════════════
+    // CONTENT collection (Live Edit feature)
+    // Read: Anyone (website needs to display content)
+    // Write: Only admin
+    // ═══════════════════════════════════════
+    match /content/{contentId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════
+    // SETTINGS collection
+    // Read: Anyone (site settings shown on website)
+    // Write: Only admin
+    // ═══════════════════════════════════════
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════
+    // USERS collection
+    // Read own profile: Authenticated user
+    // Read all: Only admin
+    // Create own profile: Authenticated user (on signup)
+    // Update own profile: Own user only
+    // Full write (any user): Only admin
+    // ═══════════════════════════════════════
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════
+    // ORDERS collection
+    // Read own orders: Authenticated user (matching email)
+    // Read all: Only admin
+    // Create: Authenticated users
+    // Update/Delete: Only admin
+    // ═══════════════════════════════════════
+    match /orders/{orderId} {
+      allow read: if isAdmin() ||
+        (isAuthenticated() && resource.data.email == request.auth.token.email);
+      allow create: if isAuthenticated();
+      allow update, delete: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════
+    // INQUIRIES collection
+    // Read: Only admin
+    // Create: Anyone (contact form — no login needed)
+    // Update/Delete: Only admin
+    // ═══════════════════════════════════════
+    match /inquiries/{inquiryId} {
+      allow read: if isAdmin();
+      allow create: if true;
+      allow update, delete: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════
+    // SERVICES collection (if used)
+    // Read: Anyone
+    // Write: Only admin
+    // ═══════════════════════════════════════
+    match /services/{serviceId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════
+    // DEFAULT: Deny everything else
+    // ═══════════════════════════════════════
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

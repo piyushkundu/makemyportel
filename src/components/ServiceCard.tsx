@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Sparkles, ArrowRight, Tag } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import EditableText from '@/components/EditableText';
 
 interface ServiceCardProps {
     id: string;
@@ -65,23 +66,38 @@ export default function ServiceCard({
                 <Sparkles className="w-6 h-6 text-purple-600" />
             </div>
 
-            {/* Title & Description */}
-            <h3 className="text-xl font-bold text-slate-800 mb-2">{name}</h3>
-            <p className="text-slate-500 text-sm leading-relaxed mb-6">{description}</p>
+            {/* Title & Description — Editable */}
+            <h3 className="text-xl font-bold text-slate-800 mb-2">
+                <EditableText contentId={`service_name_${id}`} defaultValue={name} />
+            </h3>
+            <p className="text-slate-500 text-sm leading-relaxed mb-6">
+                <EditableText contentId={`service_desc_${id}`} defaultValue={description} />
+            </p>
 
-            {/* Price */}
+            {/* Price — Editable */}
             <div className="flex items-baseline gap-2 mb-6">
                 <span className="text-slate-400 text-lg">₹</span>
                 {hasDiscount && (
                     <span className="text-slate-400 line-through text-lg">
-                        {formatPrice(priceMin)}
+                        <EditableText
+                            contentId={`service_original_price_${id}`}
+                            defaultValue={formatPrice(priceMin)}
+                        />
                     </span>
                 )}
                 <span className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-500 bg-clip-text text-transparent">
-                    {formatPrice(displayPrice)}
+                    <EditableText
+                        contentId={`service_price_${id}`}
+                        defaultValue={formatPrice(displayPrice)}
+                    />
                 </span>
                 {!isSinglePrice && (
-                    <span className="text-slate-400">– ₹{formatPrice(priceMax)}</span>
+                    <span className="text-slate-400">
+                        – ₹<EditableText
+                            contentId={`service_price_max_${id}`}
+                            defaultValue={formatPrice(priceMax)}
+                        />
+                    </span>
                 )}
             </div>
 
